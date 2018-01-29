@@ -235,7 +235,7 @@ func (cmd *initCommand) establishProjectAt(root string, ctx *dep.Ctx) (*dep.Proj
 		return nil, errors.Errorf("invalid aborted: lock already exists at %s", lf)
 	}
 
-	ip, err := ctx.ImportForAbs(root)
+	ip, err := ctx.ImportPathForProject(p)
 	if err != nil {
 		return nil, errors.Wrapf(err, "init failed: unable to determine the import path for the root project %s", root)
 	}

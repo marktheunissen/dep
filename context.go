@@ -134,7 +134,7 @@ func (c *Ctx) LoadProject() (*Project, error) {
 		return nil, err
 	}
 
-	ip, err := c.ImportForAbs(p.AbsRoot)
+	ip, err := c.ImportPathForProject(p)
 	if err != nil {
 		return nil, errors.Wrap(err, "root project import")
 	}
@@ -246,7 +246,12 @@ func (c *Ctx) detectGOPATH(path string) (string, error) {
 
 // ImportForAbs returns the import path for an absolute project path by trimming the
 // `$GOPATH/src/` prefix.  Returns an error for paths equal to, or without this prefix.
-func (c *Ctx) ImportForAbs(path string) (string, error) {
+func (c *Ctx) ImportPathForProject(p *Project) (string, error) {
+	path := p.AbsRoot
+	if p.AbsRoot != p.ResolvedAbsRoot {
+		path = p.ResolvedAbsRoot
+	}
+
 	srcprefix := filepath.Join(c.GOPATH, "src") + string(filepath.Separator)
 	isPrefix, err := fs.HasFilepathPrefix(path, srcprefix)
 	if err != nil {
